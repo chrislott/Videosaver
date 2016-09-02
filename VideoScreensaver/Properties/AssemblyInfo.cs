@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("Video Screensaver")]
 [assembly: AssemblyDescription("This screensaver plays video files.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Michael Barnathan")]
+[assembly: AssemblyCompany("Michael Barnathan and Chris Lott")]
 [assembly: AssemblyProduct("Video Screensaver")]
 [assembly: AssemblyCopyright("Released under GPL v3.")]
 [assembly: AssemblyTrademark("")]

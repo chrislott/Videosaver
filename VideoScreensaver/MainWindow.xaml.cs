@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace VideoScreensaver {
     /// <summary>
@@ -18,6 +20,9 @@ namespace VideoScreensaver {
     public partial class MainWindow : Window {
         private bool preview;
         private Point? lastMousePosition = null;  // Workaround for "MouseMove always fires when maximized" bug.
+        private int currentItem = -1;
+        private List<String> videoPaths;
+        private DispatcherTimer imageTimer;
         private double volume {
             get { return FullScreenMedia.Volume; }
             set {
@@ -30,6 +35,9 @@ namespace VideoScreensaver {
             InitializeComponent();
             this.preview = preview;
             FullScreenMedia.Volume = PreferenceManager.ReadVolumeSetting();
+            imageTimer = new DispatcherTimer();
+            imageTimer.Tick += ImageTimerEnded;
+            imageTimer.Interval = TimeSpan.FromSeconds(10);
             if (preview) {
                 ShowError("When fullscreen, control volume with up/down arrows or mouse wheel.");
             }
@@ -71,12 +79,7 @@ namespace VideoScreensaver {
         private void ScrMouseDown(object sender, MouseButtonEventArgs e) {
             EndFullScreensaver();
         }
-
-        private void ScrSizeChange(object sender, SizeChangedEventArgs e) {
-            FullScreenMedia.Width = e.NewSize.Width;
-            FullScreenMedia.Height = e.NewSize.Height;
-        }
-
+        
         // End the screensaver only if running in full screen. No-op in preview mode.
         private void EndFullScreensaver() {
             if (!preview) {
@@ -85,12 +88,45 @@ namespace VideoScreensaver {
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
-            List<String> videoPaths = PreferenceManager.ReadVideoSettings();
+            videoPaths = PreferenceManager.ReadVideoSettings();
             if (videoPaths.Count == 0) {
                 ShowError("This screensaver needs to be configured before any video is displayed.");
-            } else {
-                FullScreenMedia.Source = new System.Uri(videoPaths[new Random().Next(videoPaths.Count)]);
+            } else
+            {
+                NextMediaItem();
             }
+        }
+
+        private void NextMediaItem()
+        {
+            currentItem = (currentItem + 1) % videoPaths.Count;
+
+            FileInfo fi = new FileInfo(videoPaths[currentItem]);
+            if (fi.Extension.Equals(".png", StringComparison.OrdinalIgnoreCase) ||
+                fi.Extension.Equals(".jpg", StringComparison.OrdinalIgnoreCase))
+            {
+                LoadImage(fi.FullName);
+            }
+            else
+            {
+                LoadMedia(fi.FullName);
+            }
+        }
+
+        private void LoadImage(string filename)
+        {
+            FullScreenImage.Visibility = Visibility.Visible;
+            FullScreenMedia.Visibility = Visibility.Collapsed;
+            FullScreenImage.Source = new BitmapImage(new Uri(filename));
+            imageTimer.Start();
+        }
+
+        private void LoadMedia(string filename)
+        {
+            FullScreenImage.Visibility = Visibility.Collapsed;
+            FullScreenMedia.Visibility = Visibility.Visible;
+            FullScreenMedia.Source = new Uri(filename);
+            FullScreenMedia.Play();
         }
 
         private void ShowError(string errorMessage) {
@@ -103,6 +139,16 @@ namespace VideoScreensaver {
 
         private void MediaEnded(object sender, RoutedEventArgs e) {
             FullScreenMedia.Position = new TimeSpan(0);
+            FullScreenMedia.Stop();
+            FullScreenMedia.Source = null;
+            NextMediaItem();
+        }
+        
+        private void ImageTimerEnded(object sender, EventArgs e)
+        {
+            imageTimer.Stop();
+            FullScreenImage.Source = null;
+            NextMediaItem();
         }
     }
 }

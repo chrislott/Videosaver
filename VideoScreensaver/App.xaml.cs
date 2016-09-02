@@ -81,7 +81,7 @@ namespace VideoScreensaver
             Microsoft.Win32.OpenFileDialog openDialog = new Microsoft.Win32.OpenFileDialog();
             openDialog.Multiselect = true;
             openDialog.FileName = (videoUri.Count > 0) ? videoUri[0] : "";
-            openDialog.Title = "Select video files to display...";
+            openDialog.Title = "Select video/image files to display...";
             if (openDialog.ShowDialog() == true) {
                 List<String> videos = new List<String>();
                 videos.AddRange(openDialog.FileNames);
