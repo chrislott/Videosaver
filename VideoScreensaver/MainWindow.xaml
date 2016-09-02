@@ -7,7 +7,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Image Name="FullScreenImage"></Image>
-        <MediaElement Margin="0" Name="FullScreenMedia" Volume="0" MediaEnded="MediaEnded" />
+        <MediaElement Margin="0" Name="FullScreenMedia" Volume="0" MediaEnded="MediaEnded" LoadedBehavior="Manual" />
         <TextBlock Name="ErrorText" FontSize="24" Text="" TextWrapping="Wrap" Foreground="White" Visibility="Hidden" />
     </Grid>
 </Window>
