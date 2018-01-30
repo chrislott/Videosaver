@@ -1,7 +1,7 @@
 ﻿<Window x:Class="VideoScreensaver.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Height="350" Width="525" HorizontalAlignment="Center" VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" WindowState="Maximized" Cursor="None" Title="Video Screensaver" WindowStyle="None" Background="Black" KeyDown="ScrKeyDown" MouseMove="ScrMouseMove" MouseDown="ScrMouseDown" MouseWheel="ScrMouseWheel" Loaded="OnLoaded">
+        Height="350" Width="525" HorizontalAlignment="Center" VerticalAlignment="Center" Topmost="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" WindowState="Maximized" Cursor="None" Title="Video Screensaver" WindowStyle="None" Background="Black" KeyDown="ScrKeyDown" MouseMove="ScrMouseMove" MouseDown="ScrMouseDown" MouseWheel="ScrMouseWheel" Loaded="OnLoaded">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
